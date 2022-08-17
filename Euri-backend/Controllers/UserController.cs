@@ -1,7 +1,8 @@
 ﻿using Euri_backend.Data.Dto;
 using Euri_backend.Data.Models;
-using Euri_backend.Services.Interfaces;
+using Euri_backend.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Euri_backend.Controllers;
@@ -10,38 +11,39 @@ namespace Euri_backend.Controllers;
 [Route("api/[controller]")]
 public class UserController: ControllerBase
 {
-    private readonly IUserService _userService;
+    private readonly IUserRepository _repository;
 
-    public UserController([FromServices] IUserService service)
+    public UserController(IUserRepository repository)
     {
-        _userService = service;
+        _repository = repository;
     }
     
     [Route("{id}")]
     [HttpGet]
-    public async Task<ActionResult<UserModel>> Get(string id)
+    public async Task<ActionResult<UserModel>> Get(int id)
     {
-        // parse id to int
-        if(!int.TryParse(id, out var userId))
-        {
-            BadRequest("Invalid user id");
-        }
-        var user = await _userService.GetUser(userId);
+
+        var user = await _repository.GetUser(id);
         if (user == null)
         {
             return NotFound("No user found");
         }
-        return Ok(user);
+        
+        var userDto = new UserDto(user);
+        return Ok(userDto);
     }
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserModel>>> GetAll()
     {
-        var users = await _userService.GetAllUsers();
-        return Ok(users);
+        var users = await _repository.GetAllUsers();
+        
+        var usersDtos = users.Select(user => new UserDto(user));
+        
+        return Ok(usersDtos);
     }
     
     [HttpPost]
-    public async Task<ActionResult<UserModel>> Post([FromBody] UserToBeCreatedDto user)
+    public async Task<ActionResult<UserModel>> Post([FromBody] UserModel user)
     {
         try
         {
@@ -55,9 +57,9 @@ public class UserController: ControllerBase
                 return BadRequest("Invalid model state");
             }
             
-            var userEntity = await _userService.CreateUser(user);
+            var userEntity = await _repository.CreateUser(user);
             
-            return CreatedAtAction(nameof(Get), new { id = userEntity.Id }, userEntity);
+            return CreatedAtAction(nameof(Get), new { id = userEntity.Id }, new UserDto(userEntity));
 
             
         }
@@ -66,6 +68,40 @@ public class UserController: ControllerBase
             Console.WriteLine(e);
             throw;
         }
-        // var newUser = await _userService.CreateUser(user);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> PutUser(int id, UserModel user)
+    {
+        if (id != user.Id)
+        {
+            return BadRequest();
+        }
+        
+        var newUser = await _repository.UpdateUser(user);
+        
+        if (newUser == null)
+        {
+            return NotFound();
+        }
+
+        return Ok(new UserDto(newUser));
+    }
+    
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteUser(int id)
+    {
+        if(id == 0)
+        {
+            return BadRequest();
+        }
+        
+        var user = await _repository.DeleteUser(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
     }
 }

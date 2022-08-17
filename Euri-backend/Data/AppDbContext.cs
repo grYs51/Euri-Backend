@@ -25,6 +25,12 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UserModel>()
-            .HasOne(p => p.Address);
+            .HasOne<AddressModel>(x => x.Address)
+            .WithOne(s => s.User)
+            .HasForeignKey<AddressModel>(ad => ad.UserAddressId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        
+
     }
 }
