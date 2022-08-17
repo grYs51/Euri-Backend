@@ -25,6 +25,6 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UserModel>()
-            .HasOne(p => p.Adress);
+            .HasOne(p => p.Address);
     }
 }
