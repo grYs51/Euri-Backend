@@ -1,15 +1,13 @@
-﻿using Euri_backend.Data;
+﻿using System.Text.Json.Serialization;
+using Euri_backend.Data;
 using Euri_backend.Repository;
 using Euri_backend.Repository.Interfaces;
-using Euri_backend.Services;
-using Euri_backend.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
+
 
 builder.Services.AddDbContext<AppDbContext>();
 
@@ -35,3 +33,4 @@ app.MapControllers();
 
 app.Run();
 
+public partial class Program { }

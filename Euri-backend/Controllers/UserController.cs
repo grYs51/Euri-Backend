@@ -43,7 +43,7 @@ public class UserController: ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<UserModel>> Post([FromBody] UserModel user)
+    public async Task<ActionResult<UserModel>> Post([FromBody] CreateUserDto user)
     {
         try
         {
@@ -57,7 +57,7 @@ public class UserController: ControllerBase
                 return BadRequest("Invalid model state");
             }
             
-            var userEntity = await _repository.CreateUser(user);
+            var userEntity = await _repository.CreateUser(user.MapToUserModel(user));
             
             return CreatedAtAction(nameof(Get), new { id = userEntity.Id }, new UserDto(userEntity));
 
@@ -71,14 +71,14 @@ public class UserController: ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutUser(int id, UserModel user)
+    public async Task<IActionResult> PutUser(int id, UpdatedUserDto user)
     {
         if (id != user.Id)
         {
             return BadRequest();
         }
         
-        var newUser = await _repository.UpdateUser(user);
+        var newUser = await _repository.UpdateUser(user.MapToUserModel(user));
         
         if (newUser == null)
         {
