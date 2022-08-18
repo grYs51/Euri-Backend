@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Euri_backend.Data;
+﻿using Euri_backend.Data;
 using Euri_backend.Repository;
 using Euri_backend.Repository.Interfaces;
 
