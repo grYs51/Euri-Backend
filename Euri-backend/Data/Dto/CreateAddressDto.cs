@@ -10,15 +10,15 @@ public class CreateAddressDto
     public string Zip { get; set; }
     public string Country { get; set; }
     
-    public AddressModel MapToAddressModel( CreateAddressDto createAddressDto)
+    public AddressModel MapToAddressModel()
     {
         return new AddressModel
         {
-            Street = createAddressDto.Street,
-            City = createAddressDto.City,
-            Number = createAddressDto.Number,
-            Zip = createAddressDto.Zip,
-            Country = createAddressDto.Country
+            Street = Street,
+            City = City,
+            Number = Number,
+            Zip = Zip,
+            Country = Country
         };
     }
 }

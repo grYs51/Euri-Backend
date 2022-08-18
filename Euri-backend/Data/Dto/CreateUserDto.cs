@@ -11,16 +11,16 @@ public class CreateUserDto
     public string Password { get;  set; }
     public CreateAddressDto Address { get;  set; }
 
-    public UserModel MapToUserModel(CreateUserDto user)
+    public UserModel MapToUserModel()
     {
         return new UserModel
         {
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
-            Role = user.Role,
-            Password = user.Password,
-            Address = Address.MapToAddressModel(user.Address)
+            FirstName = FirstName,
+            LastName = LastName,
+            Email = Email,
+            Role = Role,
+            Password = Password,
+            Address = Address.MapToAddressModel()
         };
     }
 }

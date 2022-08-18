@@ -20,7 +20,7 @@ public class UserController: ControllerBase
     
     [Route("{id}")]
     [HttpGet]
-    public async Task<ActionResult<UserModel>> Get(int id)
+    public async Task<ActionResult<UserDto>> Get(int id)
     {
 
         var user = await _repository.GetUser(id);
@@ -33,7 +33,7 @@ public class UserController: ControllerBase
         return Ok(userDto);
     }
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserModel>>> GetAll()
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetAll()
     {
         var users = await _repository.GetAllUsers();
         
@@ -43,7 +43,7 @@ public class UserController: ControllerBase
     }
     
     [HttpPost]
-    public async Task<ActionResult<UserModel>> Post([FromBody] CreateUserDto user)
+    public async Task<ActionResult<UserDto>> Post([FromBody] CreateUserDto user)
     {
         try
         {
@@ -57,7 +57,7 @@ public class UserController: ControllerBase
                 return BadRequest("Invalid model state");
             }
             
-            var userEntity = await _repository.CreateUser(user.MapToUserModel(user));
+            var userEntity = await _repository.CreateUser(user.MapToUserModel());
             
             return CreatedAtAction(nameof(Get), new { id = userEntity.Id }, new UserDto(userEntity));
 
@@ -71,7 +71,7 @@ public class UserController: ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutUser(int id, UpdatedUserDto user)
+    public async Task<ActionResult<UserDto>> PutUser(int id, UpdatedUserDto user)
     {
         if (id != user.Id)
         {
