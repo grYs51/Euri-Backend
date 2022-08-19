@@ -21,7 +21,7 @@ public class Utilities
     {
         return new List<UserModel>
         {
-            new UserModel
+            new()
             {
                 FirstName = "test1",
                 LastName = "test1",
@@ -38,7 +38,7 @@ public class Utilities
                     User = null
                 }
             },
-            new UserModel
+            new()
             {
                 FirstName = "test2",
                 LastName = "test2",
