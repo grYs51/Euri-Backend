@@ -10,26 +10,42 @@ using Euri_backend.Data.Dto;
 using Euri_backend.Data.Models;
 using Euri_backend.Repository;
 using Euri_backend.Repository.Interfaces;
+using Euri_backend.Utillities;
+using Newtonsoft.Json;
 
 namespace Euri_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _repository;
 
-        public ProductController(IProductRepository repository)
+        public ProductsController(IProductRepository repository)
         {
             _repository = repository;
         }
 
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts()
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProducts([FromQuery] ProductParameters parameters)
+
         {
-            var products = await _repository.GetAllProducts();
+            var products = await _repository.GetAllProducts(parameters);
             var productDtos = products.Select(product => new ProductDto(product));
+            
+            var metadata = new
+            {
+                products.TotalCount,
+                products.PageSize,
+                products.CurrentPage,
+                products.TotalPages,
+                products.HasNext,
+                products.HasPrevious
+            };
+            
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+
         
             return Ok(productDtos);
         }
