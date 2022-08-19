@@ -13,6 +13,7 @@ public class UserRepository : IUserRepository
     {
         _ctxt = ctxt;
     }
+
     public async Task<UserModel> GetUser(int id)
     {
         return await _ctxt.Users.Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
@@ -34,7 +35,7 @@ public class UserRepository : IUserRepository
     public async Task<UserModel> UpdateUser(UserModel user)
     {
         _ctxt.Entry(user).State = EntityState.Modified;
-        _ctxt.Entry(user.Address).State = EntityState.Modified; 
+        _ctxt.Entry(user.Address).State = EntityState.Modified;
         try
         {
             await _ctxt.SaveChangesAsync();
@@ -42,25 +43,18 @@ public class UserRepository : IUserRepository
         catch (DbUpdateException e)
         {
             if (!UserExists(user.Id))
-            {
                 return null;
-            }
-            else
-            {
-                throw;
-            }
+            throw;
         }
+
         return user;
     }
 
     public async Task<UserModel> DeleteUser(int id)
     {
         var user = await _ctxt.Users.Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
-        
-        if (user == null)
-        {
-            return null;
-        }
+
+        if (user == null) return null;
         _ctxt.Users.Remove(user);
         await _ctxt.SaveChangesAsync();
         return user;
@@ -68,6 +62,6 @@ public class UserRepository : IUserRepository
 
     private bool UserExists(int id)
     {
-        return (_ctxt.Users.Any(x => x.Id == id));
+        return _ctxt.Users.Any(x => x.Id == id);
     }
 }

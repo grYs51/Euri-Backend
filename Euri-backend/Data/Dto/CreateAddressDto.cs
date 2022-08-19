@@ -9,7 +9,7 @@ public class CreateAddressDto
     public string Number { get; set; }
     public string Zip { get; set; }
     public string Country { get; set; }
-    
+
     public AddressModel MapToAddressModel()
     {
         return new AddressModel
