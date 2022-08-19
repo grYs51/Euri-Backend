@@ -5,15 +5,15 @@ namespace Euri_backend.Data.Dto;
 
 public class UpdateAddressDto
 {
-    [IgnoreDataMember]
-    public int Id { get; set; }
+    [IgnoreDataMember] public int Id { get; set; }
+
     public string Street { get; set; }
     public string City { get; set; }
     public string Number { get; set; }
     public string Zip { get; set; }
     public string Country { get; set; }
-    
-    public AddressModel MapToAddressModel( int id, UpdateAddressDto createAddressDto)
+
+    public AddressModel MapToAddressModel(int id, UpdateAddressDto createAddressDto)
     {
         return new AddressModel
         {

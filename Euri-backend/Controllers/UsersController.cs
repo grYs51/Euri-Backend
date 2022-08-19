@@ -9,39 +9,36 @@ namespace Euri_backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController: ControllerBase
+public class UsersController : ControllerBase
 {
     private readonly IUserRepository _repository;
 
-    public UserController(IUserRepository repository)
+    public UsersController(IUserRepository repository)
     {
         _repository = repository;
     }
-    
+
     [Route("{id}")]
     [HttpGet]
     public async Task<ActionResult<UserDto>> Get(int id)
     {
-
         var user = await _repository.GetUser(id);
-        if (user == null)
-        {
-            return NotFound("No user found");
-        }
-        
+        if (user == null) return NotFound("No user found");
+
         var userDto = new UserDto(user);
         return Ok(userDto);
     }
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetAll()
     {
         var users = await _repository.GetAllUsers();
-        
+
         var usersDtos = users.Select(user => new UserDto(user));
-        
+
         return Ok(usersDtos);
     }
-    
+
     [HttpPost]
     public async Task<ActionResult<UserDto>> Post([FromBody] CreateUserDto user)
     {
@@ -51,17 +48,12 @@ public class UserController: ControllerBase
             {
                 return BadRequest("User object is null");
             }
-            
-            if( !ModelState.IsValid)
-            {
-                return BadRequest("Invalid model state");
-            }
-            
-            var userEntity = await _repository.CreateUser(user.MapToUserModel());
-            
-            return CreatedAtAction(nameof(Get), new { id = userEntity.Id }, new UserDto(userEntity));
 
-            
+            if (!ModelState.IsValid) return BadRequest("Invalid model state");
+
+            var userEntity = await _repository.CreateUser(user.MapToUserModel());
+
+            return CreatedAtAction(nameof(Get), new { id = userEntity.Id }, new UserDto(userEntity));
         }
         catch (Exception e)
         {
@@ -73,34 +65,22 @@ public class UserController: ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<UserDto>> PutUser(int id, UpdatedUserDto user)
     {
-        if (id != user.Id)
-        {
-            return BadRequest();
-        }
-        
+        if (id != user.Id) return BadRequest();
+
         var newUser = await _repository.UpdateUser(user.MapToUserModel(user));
-        
-        if (newUser == null)
-        {
-            return NotFound();
-        }
+
+        if (newUser == null) return NotFound();
 
         return Ok(new UserDto(newUser));
     }
-    
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(int id)
     {
-        if(id == 0)
-        {
-            return BadRequest();
-        }
-        
+        if (id == 0) return BadRequest();
+
         var user = await _repository.DeleteUser(id);
-        if (user == null)
-        {
-            return NotFound();
-        }
+        if (user == null) return NotFound();
 
         return NoContent();
     }

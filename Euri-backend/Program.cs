@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Euri_backend.Data;
+﻿using Euri_backend.Data;
 using Euri_backend.Repository;
 using Euri_backend.Repository.Interfaces;
 
@@ -34,4 +33,6 @@ app.MapControllers();
 
 app.Run();
 
-public partial class Program { }
+public partial class Program
+{
+}
