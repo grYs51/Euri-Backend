@@ -6,48 +6,54 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
 
 namespace Euri_backend.Testing.Utilities;
 
-public class CustomWebApplicationFactory<TStartup>
-    : WebApplicationFactory<TStartup> where TStartup: class
+public class CustomWebApplicationFactory<TEntrypoint>
+    : WebApplicationFactory<Program> where TEntrypoint : Program
+
 {
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
-    {
-        builder.ConfigureServices(services =>
+    
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            var descriptor = services.SingleOrDefault(
-                d => d.ServiceType ==
-                     typeof(DbContextOptions<AppDbContext>));
-
-            services.Remove(descriptor);
-
-            services.AddDbContext<AppDbContext>(options =>
+            builder.ConfigureServices(services =>
             {
-                options.UseInMemoryDatabase("InMemoryDbForTesting");
+                var descriptor = services.SingleOrDefault(
+                    d => d.ServiceType ==
+                         typeof(DbContextOptions<AppDbContext>));
+                if (descriptor != null)
+                    services.Remove(descriptor);
+                services.AddDbContext<AppDbContext>(options =>
+                {
+                    options.UseInMemoryDatabase("InMemoryUserTest");
+                });
+                var sp = services.BuildServiceProvider();
+                using (var scope = sp.CreateScope())
+                using (var appContext = scope.ServiceProvider.GetRequiredService<AppDbContext>())
+                {
+                    try
+                    {
+                        appContext.Database.EnsureDeleted();
+                        appContext.Database.EnsureCreated();
+                        if (appContext.Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
+                        {
+                            appContext.Database.Migrate();
+
+                            appContext.Users.AddRange(Utilities.GetUsers());
+                            appContext.SaveChanges();
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        //Log errors or do anything you think it's needed
+                        throw;
+                    }
+                }
             });
-
-            var sp = services.BuildServiceProvider();
-
-            using (var scope = sp.CreateScope())
-            {
-                var scopedServices = scope.ServiceProvider;
-                var db = scopedServices.GetRequiredService<AppDbContext>();
-                var logger = scopedServices
-                    .GetRequiredService<ILogger<CustomWebApplicationFactory<TStartup>>>();
-
-                db.Database.EnsureCreated();
-
-                try
-                {
-                    Utilities.InitializeDbForTests(db);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogError(ex, "An error occurred seeding the " +
-                                        "database with test messages. Error: {Message}", ex.Message);
-                }
-            }
-        });
-    }
+        }
+    
 }

@@ -1,2 +1,3 @@
 global using Xunit;
-using FluentAssertions;
+global using FluentAssertions;
+global using Microsoft.AspNetCore.Mvc.Testing;

@@ -18,10 +18,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-  </ItemGroup>
+    <InternalsVisibleTo Include="Euri-backend.Testing" />
 
-  <ItemGroup>
-     <InternalsVisibleTo Include="Euri-backend.Testing" />
-</ItemGroup>
+  </ItemGroup>
 
 </Project>

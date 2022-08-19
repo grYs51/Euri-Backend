@@ -9,11 +9,11 @@ namespace Euri_backend.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class UserController: ControllerBase
+public class UsersController: ControllerBase
 {
     private readonly IUserRepository _repository;
 
-    public UserController(IUserRepository repository)
+    public UsersController(IUserRepository repository)
     {
         _repository = repository;
     }
@@ -22,7 +22,6 @@ public class UserController: ControllerBase
     [HttpGet]
     public async Task<ActionResult<UserModel>> Get(int id)
     {
-
         var user = await _repository.GetUser(id);
         if (user == null)
         {
@@ -57,7 +56,7 @@ public class UserController: ControllerBase
                 return BadRequest("Invalid model state");
             }
             
-            var userEntity = await _repository.CreateUser(user.MapToUserModel(user));
+            var userEntity = await _repository.CreateUser(user.MapToUserModel());
             
             return CreatedAtAction(nameof(Get), new { id = userEntity.Id }, new UserDto(userEntity));
 

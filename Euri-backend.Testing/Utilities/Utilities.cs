@@ -23,15 +23,13 @@ public class Utilities
         {
             new UserModel
             {
-                Id = 1,
-                FirstName = "test",
-                LastName = "test",
+                FirstName = "test1",
+                LastName = "test1",
                 Password = "123456",
                 Email = "test.test@euri.com",
                 Role = "admin",
                 Address = new AddressModel
                 {
-                    UserAddressId = 1,
                     Street = "teststreet",
                     City = "testcity",
                     Number = "1",
@@ -42,7 +40,6 @@ public class Utilities
             },
             new UserModel
             {
-                Id = 2,
                 FirstName = "test2",
                 LastName = "test2",
                 Password = "123456",
@@ -50,7 +47,6 @@ public class Utilities
                 Role = "user",
                 Address = new AddressModel
                 {
-                    UserAddressId = 2,
                     Street = "teststreet",
                     City = "testcity",
                     Number = "1",
