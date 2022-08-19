@@ -16,6 +16,7 @@ public class UserRepository : IUserRepository
 
     public async Task<UserModel> GetUser(int id)
     {
+        // return await  _ctxt.Users.FirstOrDefaultAsync(u => u.Id == id);
         return await _ctxt.Users.Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
     }
 
@@ -26,18 +27,16 @@ public class UserRepository : IUserRepository
 
     public async Task<UserModel> CreateUser(UserModel user)
     {
-        _ctxt.Add(user);
-
+        await _ctxt.AddAsync(user);
         await _ctxt.SaveChangesAsync();
         return user;
     }
 
     public async Task<UserModel> UpdateUser(UserModel user)
     {
-        _ctxt.Entry(user).State = EntityState.Modified;
-        _ctxt.Entry(user.Address).State = EntityState.Modified;
         try
         {
+            _ctxt.Users.Update(user);
             await _ctxt.SaveChangesAsync();
         }
         catch (DbUpdateException e)

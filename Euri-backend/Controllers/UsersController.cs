@@ -20,7 +20,7 @@ public class UsersController : ControllerBase
 
     [Route("{id}")]
     [HttpGet]
-    public async Task<ActionResult<UserModel>> Get(int id)
+    public async Task<ActionResult<UserDto>> Get(int id)
     {
         var user = await _repository.GetUser(id);
         if (user == null) return NotFound("No user found");
@@ -30,7 +30,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserModel>>> GetAll()
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetAll()
     {
         var users = await _repository.GetAllUsers();
 
@@ -40,11 +40,14 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<UserModel>> Post([FromBody] CreateUserDto user)
+    public async Task<ActionResult<UserDto>> Post([FromBody] CreateUserDto user)
     {
         try
         {
-            if (user is null) return BadRequest("User object is null");
+            if (user is null)
+            {
+                return BadRequest("User object is null");
+            }
 
             if (!ModelState.IsValid) return BadRequest("Invalid model state");
 
@@ -60,7 +63,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutUser(int id, UpdatedUserDto user)
+    public async Task<ActionResult<UserDto>> PutUser(int id, UpdatedUserDto user)
     {
         if (id != user.Id) return BadRequest();
 
