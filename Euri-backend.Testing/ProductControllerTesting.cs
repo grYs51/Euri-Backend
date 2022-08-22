@@ -119,9 +119,9 @@ public class ProductControllerTesting
         {
             Name = "Product 12",
             Description = "Description 12",
-            Price = "2.99",
+            Price = 2,
             Category = "1",
-            Discount = "12.5",
+            Discount = 12,
             Stock = 2,
         };
         var stringContent = JsonConvert.SerializeObject(product);
@@ -160,9 +160,9 @@ public class ProductControllerTesting
             Id = 1,
             Name = "New Product 1",
             Description = "Description 1",
-            Price = "1.99",
+            Price = 2,
             Category = "1",
-            Discount = "1.5",
+            Discount = 1,
             Stock = 99,
         };
         var stringContent = JsonConvert.SerializeObject(product);

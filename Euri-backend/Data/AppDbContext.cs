@@ -15,7 +15,10 @@ public class AppDbContext : DbContext
     public DbSet<UserModel> Users { get; set; }
     public DbSet<ProductModel> Products { get; set; }
     public DbSet<BasketModel> Baskets { get; set; }
+    
+    public DbSet<BasketItemModel> BasketItems { get; set; }
 
+    
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         // connect to sql server with connection string from app settings
@@ -29,5 +32,14 @@ public class AppDbContext : DbContext
             .WithOne(s => s.User)
             .HasForeignKey<AddressModel>(ad => ad.UserAddressId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<BasketModel>()
+            .HasMany(b => b.Items)
+            .WithOne(bi => bi.Basket)
+            .HasForeignKey(bi => bi.BasketId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<BasketItemModel>()
+            .HasOne(i => i.Product);
     }
 }
