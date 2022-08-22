@@ -33,16 +33,8 @@ namespace Euri_backend.Controllers
         {
             var products = await _repository.GetAllProducts(parameters);
             var productDtos = products.Select(product => new ProductDto(product));
-            
-            var metadata = new
-            {
-                products.TotalCount,
-                products.PageSize,
-                products.CurrentPage,
-                products.TotalPages,
-                products.HasNext,
-                products.HasPrevious
-            };
+
+            var metadata = new MetadataDto<ProductModel>(products);
             
             Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
 
