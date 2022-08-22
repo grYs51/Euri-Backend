@@ -29,8 +29,8 @@ public class UserControllerFactory<TEntrypoint>
                 {
                     appContext.Database.Migrate();
 
-                    appContext.Users.AddRange(Utilities.GetUsers());
-                    appContext.SaveChanges();
+                    Utilities.InitializeDbForUserTests(appContext);
+                    Utilities.InitializeDbForProductTests(appContext);
                 }
             }
         });
