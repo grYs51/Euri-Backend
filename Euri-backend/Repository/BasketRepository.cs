@@ -37,8 +37,6 @@ public class BasketRepository: IBasketRepository
 
         var basketEntity = await GetBasket(basket.Id);
         return basketEntity;
-        
-
     }
 
     public async Task<BasketModel> UpdateBasket(BasketModel basket)

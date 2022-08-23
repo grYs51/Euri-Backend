@@ -10,12 +10,19 @@ public class Utilities
         db.Users.AddRange(GetUsers());
         db.SaveChanges();
     }
+
     public static void InitializeDbForProductTests(AppDbContext db)
     {
         db.Products.AddRange(GetProducts());
         db.SaveChanges();
     }
-
+    
+    public static void InitializeDbForBasketTests(AppDbContext db)
+    {
+        db.Baskets.AddRange(GetBaskets());
+        db.SaveChanges();
+    }
+    
     public static List<UserModel> GetUsers()
     {
         return new List<UserModel>
@@ -160,6 +167,48 @@ public class Utilities
                 Discount = 5,
                 Stock = 10,
             },
+        };
+    }
+
+    public static List<BasketModel> GetBaskets()
+    {
+        return new List<BasketModel>
+        {
+            new()
+            {
+                Items = new List<BasketItemModel>
+                {
+                    new()
+                    {
+                        ProductId = 1,
+                        BasketId = 1,
+                        Quantity = 10
+                    },
+                    new(){
+                        ProductId = 2,
+                        BasketId = 1,
+                        Quantity = 10
+                    },
+                },
+                
+                DiscountCode = "discount",
+                ExpireTime = default
+            },
+            new()
+            {
+                Items = new List<BasketItemModel>
+                {
+                    new()
+                    {
+                        Id = 0,
+                        ProductId = 3,
+                        BasketId = 2,
+                        Quantity = 20
+                    }
+                },
+                DiscountCode = null,
+                ExpireTime = default
+            }
         };
     }
 }

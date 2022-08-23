@@ -13,7 +13,7 @@ public class ProductControllerTesting
 
     public ProductControllerTesting()
     {
-        var factory = new UserControllerFactory<Program>();
+        var factory = new ControllerFactory<Program>();
         _client = factory.CreateDefaultClient();
     }
 
