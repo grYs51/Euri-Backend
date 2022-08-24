@@ -1,22 +1,26 @@
+using System.ComponentModel.DataAnnotations;
 using Euri_backend.Data.Models;
 
 namespace Euri_backend.Data.Dto;
 
-public class UpdateProductDto
+public class CreateProductDto
 {
-    public int Id { get; set; }
+    [Required]
     public string Name { get; set; }
+    [Required]
     public string Description { get; set; }
-    public string Price { get; set; }
-    public string Discount { get; set; }
+    [Required]
+    public int Price { get; set; }
+    public int Discount { get; set; }
+    [Required]
     public string Category { get; set; }
+    [Required]
     public int Stock { get; set; }
 
     public ProductModel ToProductModel()
     {
         return new ProductModel
         {
-            Id = Id,
             Name = Name,
             Description = Description,
             Price = Price,

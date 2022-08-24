@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Euri_backend.Testing.Utilities;
 
-public class UserControllerFactory<TEntrypoint>
+public class ControllerFactory<TEntrypoint>
     : WebApplicationFactory<Program> where TEntrypoint : Program
 
 {
@@ -27,10 +27,11 @@ public class UserControllerFactory<TEntrypoint>
                 appContext.Database.EnsureCreated();
                 if (appContext.Database.ProviderName != "Microsoft.EntityFrameworkCore.InMemory")
                 {
-                    appContext.Database.Migrate();
-
+                    // appContext.Database.Migrate();
+                    
                     Utilities.InitializeDbForUserTests(appContext);
                     Utilities.InitializeDbForProductTests(appContext);
+                    Utilities.InitializeDbForBasketTests(appContext);
                 }
             }
         });

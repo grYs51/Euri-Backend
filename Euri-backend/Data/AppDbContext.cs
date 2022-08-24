@@ -29,5 +29,14 @@ public class AppDbContext : DbContext
             .WithOne(s => s.User)
             .HasForeignKey<AddressModel>(ad => ad.UserAddressId)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<BasketModel>()
+            .HasMany(b => b.Items)
+            .WithOne(bi => bi.Basket)
+            .HasForeignKey(bi => bi.BasketId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<BasketItemModel>()
+            .HasOne(i => i.Product);
     }
 }

@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Json;
 using System.Text;
 using Euri_backend.Data.Dto;
 using Euri_backend.Data.Models;
@@ -13,7 +14,7 @@ public class ProductControllerTesting
 
     public ProductControllerTesting()
     {
-        var factory = new UserControllerFactory<Program>();
+        var factory = new ControllerFactory<Program>();
         _client = factory.CreateDefaultClient();
     }
 
@@ -21,10 +22,7 @@ public class ProductControllerTesting
     [Fact]
     public async Task Get_Should_Return_10_Products()
     {
-        var response = await _client.GetAsync("/api/products");
-        response.EnsureSuccessStatusCode();
-        var stringResponse = await response.Content.ReadAsStringAsync();
-        var products = JsonConvert.DeserializeObject<IEnumerable<ProductModel>>(stringResponse);
+        var products = await _client.GetFromJsonAsync<IEnumerable<ProductModel>>("/api/Products");
         Assert.Equal(10, products.Count());
     }
 
@@ -63,11 +61,7 @@ public class ProductControllerTesting
     [Fact]
     public async Task Get_Should_Return_3_Products_With_Category_1()
     {
-        var response = await _client.GetAsync("/api/products?Filter=1");
-        response.EnsureSuccessStatusCode();
-        var stringResponse = await response.Content.ReadAsStringAsync();
-        var products = JsonConvert.DeserializeObject<IEnumerable<ProductModel>>(stringResponse);
-
+        var products = await _client.GetFromJsonAsync<IEnumerable<ProductModel>>("/api/products?Filter=1");
         Assert.Equal(3, products.Count());
     }
 
@@ -75,11 +69,7 @@ public class ProductControllerTesting
     [Fact]
     public async Task Get_Should_Return_Empty_List_When_No_Products_With_Category_9999()
     {
-        var response = await _client.GetAsync("/api/products?Filter=9999");
-        response.EnsureSuccessStatusCode();
-        var stringResponse = await response.Content.ReadAsStringAsync();
-        var products = JsonConvert.DeserializeObject<IEnumerable<ProductModel>>(stringResponse);
-
+        var products = await _client.GetFromJsonAsync<IEnumerable<ProductModel>>("/api/products?Filter=9999");
         Assert.Empty(products);
     }
 
@@ -87,11 +77,7 @@ public class ProductControllerTesting
     [Fact]
     public async Task Get_Should_Return_Product_With_Id_1()
     {
-        var response = await _client.GetAsync("/api/products/1");
-        response.EnsureSuccessStatusCode();
-        var stringResponse = await response.Content.ReadAsStringAsync();
-        var product = JsonConvert.DeserializeObject<ProductModel>(stringResponse);
-
+        var product = await _client.GetFromJsonAsync<ProductModel>("/api/products/1");
         Assert.Equal(1, product.Id);
     }
 
@@ -119,14 +105,13 @@ public class ProductControllerTesting
         {
             Name = "Product 12",
             Description = "Description 12",
-            Price = "2.99",
+            Price = 2,
             Category = "1",
-            Discount = "12.5",
+            Discount = 12,
             Stock = 2,
         };
-        var stringContent = JsonConvert.SerializeObject(product);
-        var content = new StringContent(stringContent, Encoding.UTF8, "application/json");
-        var response = await _client.PostAsync("/api/products", content);
+        
+        var response = await _client.PostAsJsonAsync("/api/products", product);
         response.EnsureSuccessStatusCode();
         var stringResponse = await response.Content.ReadAsStringAsync();
         var newProduct = JsonConvert.DeserializeObject<ProductModel>(stringResponse);
@@ -145,9 +130,8 @@ public class ProductControllerTesting
             Price = "2.99",
             Category = "1",
         };
-        var stringContent = JsonConvert.SerializeObject(product);
-        var content = new StringContent(stringContent, Encoding.UTF8, "application/json");
-        var response = await _client.PostAsync("/api/products", content);
+
+        var response = await _client.PostAsJsonAsync("/api/products", product);
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
     
@@ -160,14 +144,12 @@ public class ProductControllerTesting
             Id = 1,
             Name = "New Product 1",
             Description = "Description 1",
-            Price = "1.99",
+            Price = 2,
             Category = "1",
-            Discount = "1.5",
+            Discount = 1,
             Stock = 99,
         };
-        var stringContent = JsonConvert.SerializeObject(product);
-        var content = new StringContent(stringContent, Encoding.UTF8, "application/json");
-        var response = await _client.PutAsync("/api/products/1", content);
+        var response = await _client.PutAsJsonAsync("/api/products/1", product);
         response.EnsureSuccessStatusCode();
         var stringResponse = await response.Content.ReadAsStringAsync();
         var newProduct = JsonConvert.DeserializeObject<ProductModel>(stringResponse);

@@ -54,6 +54,7 @@ public class UserRepository : IUserRepository
         var user = await _ctxt.Users.Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == id);
 
         if (user == null) return null;
+        
         _ctxt.Users.Remove(user);
         await _ctxt.SaveChangesAsync();
         return user;
