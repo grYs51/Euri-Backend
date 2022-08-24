@@ -15,10 +15,7 @@ public class AppDbContext : DbContext
     public DbSet<UserModel> Users { get; set; }
     public DbSet<ProductModel> Products { get; set; }
     public DbSet<BasketModel> Baskets { get; set; }
-    
-    public DbSet<BasketItemModel> BasketItems { get; set; }
 
-    
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         // connect to sql server with connection string from app settings

@@ -12,7 +12,7 @@ public class BasketItemProductDto
     }
     
     public string Name { get; set; }
-    public int Price { get; set; }
-    public int Discount { get; set; }
+    public double Price { get; set; }
+    public double Discount { get; set; }
     
 }

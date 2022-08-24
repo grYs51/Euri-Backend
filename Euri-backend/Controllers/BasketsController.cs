@@ -81,7 +81,7 @@ namespace Euri_backend.Controllers
         {
             var basketEntity = await _repository.CreateBasket(basketDto.ToBasketModel());
 
-            return CreatedAtAction("GetBasketModel", new { id = basketEntity.Id }, new BasketDto(basketEntity));
+            return CreatedAtAction(nameof(GetBasketModel), new { id = basketEntity.Id }, new BasketDto(basketEntity));
         }
 
         // DELETE: api/Baskets/5
@@ -95,11 +95,8 @@ namespace Euri_backend.Controllers
                 return BadRequest();
             }
 
-            var basketModel = await _repository.DeleteBasket(id);
-            if (basketModel == null)
-            {
-                return NotFound();
-            }
+            await _repository.DeleteBasket(id);
+
             return NoContent();
         }
     }

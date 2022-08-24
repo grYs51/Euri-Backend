@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Json;
 using System.Text;
 using Euri_backend.Data.Dto;
 using Euri_backend.Data.Models;
@@ -19,29 +20,30 @@ public class BasketControllerTesting
     
     /* should get all baskets */
     [Fact]
+    [Trait("Endpoint", "GET")]
     public async Task GetAllBaskets()
     {
-        var response = await _client.GetAsync("/api/baskets");
-        response.EnsureSuccessStatusCode();
-        var stringResponse = await response.Content.ReadAsStringAsync();
-        var baskets = JsonConvert.DeserializeObject<IEnumerable<BasketModel>>(stringResponse);
+        var baskets = await _client.GetFromJsonAsync<IEnumerable<BasketModel>>("/api/baskets");
         Assert.Equal(2, baskets.Count());
     }
     
     /* should get a basket */
-    [Fact]
-    public async Task GetBasket()
+    [Theory]
+    [InlineData(1)]
+    [InlineData(2)]
+    [Trait("Endpoint", "GET")]
+
+    public async Task GetBasket(int id)
     {
-        var response = await _client.GetAsync("/api/baskets/1");
-        response.EnsureSuccessStatusCode();
-        var stringResponse = await response.Content.ReadAsStringAsync();
-        var basket = JsonConvert.DeserializeObject<BasketModel>(stringResponse);
-        Assert.Equal(1, basket.Id);
-        Assert.True(basket.Items.Count > 0);
+        var basket = await _client.GetFromJsonAsync<BasketModel>($"api/Baskets/{id}");
+        Assert.Equal(id, basket.Id);
+        Assert.True(basket.Items.Any());
     }
     
     /* should return not found when getting a basket that doesn't exist */
     [Fact]
+    [Trait("Endpoint", "GET")]
+
     public async Task GetBasketNotFound()
     {
         var response = await _client.GetAsync("/api/baskets/9999");
@@ -50,6 +52,7 @@ public class BasketControllerTesting
     
     /* should create a basket */
     [Fact]
+    [Trait("Endpoint", "POST")]
     public async Task CreateBasket()
     {
         var basket = new CreateBasketDto()
@@ -73,8 +76,7 @@ public class BasketControllerTesting
                 }
             }
         };
-        var stringContent = new StringContent(JsonConvert.SerializeObject(basket), Encoding.UTF8, "application/json");
-        var response = await _client.PostAsync("/api/baskets", stringContent);
+        var response = await _client.PostAsJsonAsync("api/baskets", basket);
         response.EnsureSuccessStatusCode();
         var stringResponse = await response.Content.ReadAsStringAsync();
         var newBasket = JsonConvert.DeserializeObject<BasketModel>(stringResponse);
@@ -84,6 +86,7 @@ public class BasketControllerTesting
     
     /* should delete a basket */
     [Fact]
+    [Trait("Endpoint", "DELETE")]
     public async Task DeleteBasket()
     {
         var response = await _client.DeleteAsync("/api/baskets/1");
@@ -93,6 +96,4 @@ public class BasketControllerTesting
         var response2 = await _client.GetAsync("/api/baskets/1");
         Assert.Equal(HttpStatusCode.NotFound, response2.StatusCode);
     }
-
-
 }

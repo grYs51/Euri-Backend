@@ -46,7 +46,7 @@ public class BasketRepository: IBasketRepository
             var basketEntity = await GetBasket(basket.Id);
             basketEntity.Items.Clear();
             
-            basketEntity.Items = basket.Items;
+            basketEntity.Items.AddRange(basket.Items);
             _ctxt.Update(basketEntity);
 
             await _ctxt.SaveChangesAsync();
