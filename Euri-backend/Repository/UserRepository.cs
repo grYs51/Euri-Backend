@@ -60,6 +60,17 @@ public class UserRepository : IUserRepository
         return user;
     }
 
+    public async Task<UserModel> Login(string modelEmail, string modelPassword)
+    {
+        var user =  await _ctxt.Users.FirstOrDefaultAsync(x => x.Email == modelEmail);
+        
+        if (user == null) return null;
+        
+        var passwordMatch =  BCrypt.Net.BCrypt.Verify( modelPassword, user.Password);
+        
+        return passwordMatch ? user : null;
+    }
+
     private bool UserExists(int id)
     {
         return _ctxt.Users.Any(x => x.Id == id);

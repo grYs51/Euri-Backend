@@ -1,7 +1,12 @@
-﻿using Euri_backend.Data.Dto;
-using Euri_backend.Data.Models;
+﻿using System.Collections.Immutable;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Euri_backend.Data.Dto;
+using Euri_backend.Data.Dto.Identity;
 using Euri_backend.Repository.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -44,10 +49,7 @@ public class UsersController : ControllerBase
     {
         try
         {
-            if (user is null)
-            {
-                return BadRequest("User object is null");
-            }
+            if (user is null) return BadRequest("User object is null");
 
             if (!ModelState.IsValid) return BadRequest("Invalid model state");
 

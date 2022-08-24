@@ -18,7 +18,7 @@ public class ControllerFactory<TEntrypoint>
                      typeof(DbContextOptions<AppDbContext>));
             if (descriptor != null)
                 services.Remove(descriptor);
-            services.AddDbContext<AppDbContext>(options => { options.UseInMemoryDatabase("InMemoryUserTest"); });
+            services.AddDbContext<AppDbContext>(options => { options.UseInMemoryDatabase("InMemoryUserTest"+ Guid.NewGuid()); });
             var sp = services.BuildServiceProvider();
             using (var scope = sp.CreateScope())
             using (var appContext = scope.ServiceProvider.GetRequiredService<AppDbContext>())

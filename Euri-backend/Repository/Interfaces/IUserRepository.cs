@@ -9,4 +9,5 @@ public interface IUserRepository
     Task<UserModel> CreateUser(UserModel user);
     Task<UserModel> UpdateUser(UserModel user);
     Task<UserModel> DeleteUser(int id);
+    Task<UserModel> Login(string modelEmail, string modelPassword);
 }

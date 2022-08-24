@@ -25,6 +25,10 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<UserModel>()
+            .HasIndex(u => u.Email)
+            .IsUnique();
+        
+        modelBuilder.Entity<UserModel>()
             .HasOne(x => x.Address)
             .WithOne(s => s.User)
             .HasForeignKey<AddressModel>(ad => ad.UserAddressId)
