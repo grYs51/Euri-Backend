@@ -22,6 +22,7 @@
         <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
         <InternalsVisibleTo Include="Euri-backend.Testing" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Filters" Version="7.0.5" />
 
     </ItemGroup>
 

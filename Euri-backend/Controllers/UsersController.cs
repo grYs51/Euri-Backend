@@ -5,6 +5,7 @@ using System.Text;
 using Euri_backend.Data.Dto;
 using Euri_backend.Data.Dto.Identity;
 using Euri_backend.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -44,7 +45,7 @@ public class UsersController : ControllerBase
         return Ok(usersDtos);
     }
 
-    [HttpPost]
+    [HttpPost, Authorize]
     public async Task<ActionResult<UserDto>> Post([FromBody] CreateUserDto user)
     {
         try
@@ -64,7 +65,7 @@ public class UsersController : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id}"), Authorize]
     public async Task<ActionResult<UserDto>> PutUser(int id, UpdatedUserDto user)
     {
         if (id != user.Id) return BadRequest();
@@ -76,7 +77,7 @@ public class UsersController : ControllerBase
         return Ok(new UserDto(newUser));
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}"), Authorize]
     public async Task<IActionResult> DeleteUser(int id)
     {
         if (id == 0) return BadRequest();

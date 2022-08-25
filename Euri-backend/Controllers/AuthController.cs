@@ -32,18 +32,22 @@ public class AuthController : ControllerBase
         var user = await _repository.Login(model.Email, model.Password);
         if (user == null) return Unauthorized();
 
+        if (user.ExpireTime > DateTime.Now)
+        {
+            user.RefreshToken = null;
+        }
+
         var token = CreateToken(user);
 
         if (user.RefreshToken == null)
         {
             var refreshToken = CreateRefreshToken();
-            var expiration = DateTime.UtcNow.AddMinutes(5);
+            var expiration = DateTime.UtcNow.AddDays(1);
             user.RefreshToken = refreshToken;
             user.ExpireTime = expiration;
             await _repository.UpdateUser(user);
-
         }
-        
+
 
         var authorize = new Authorize()
         {
@@ -52,6 +56,29 @@ public class AuthController : ControllerBase
         };
         return Ok(authorize);
     }
+
+    [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Authorize))]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [HttpPost("refreshToken")]
+    public async Task<IActionResult> RefreshToken(RefreshTokenRequest model)
+    {
+        var user = await _repository.GetUserByRefreshToken(model.RefreshToken);
+        if (user == null) return Unauthorized();
+        if (user.ExpireTime > DateTime.Now)
+        {
+            user.RefreshToken = null;
+            await _repository.UpdateUser(user);
+            return Unauthorized();
+        }
+
+        var token = CreateToken(user);
+        var authorize = new Authorize()
+        {
+            AccessToken = token,
+        };
+        return Ok(authorize);
+    }
+
 
     private string CreateToken(UserModel user)
     {
@@ -82,7 +109,7 @@ public class AuthController : ControllerBase
         var token = tokenHandler.CreateToken(tokenDescriptor);
         var jwtToken = tokenHandler.WriteToken(token);
         var stringToken = tokenHandler.WriteToken(token);
-        
+
         return stringToken;
     }
 

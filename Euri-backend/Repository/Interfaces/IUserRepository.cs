@@ -9,5 +9,6 @@ public interface IUserRepository
     Task<UserModel> CreateUser(UserModel user);
     Task<UserModel> UpdateUser(UserModel user);
     Task<UserModel> DeleteUser(int id);
-    Task<UserModel> Login(string modelEmail, string modelPassword);
+    Task<UserModel> Login(string email, string password);
+    Task<UserModel> GetUserByRefreshToken(string refreshToken);
 }

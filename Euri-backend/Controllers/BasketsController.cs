@@ -9,6 +9,7 @@ using Euri_backend.Data;
 using Euri_backend.Data.Dto;
 using Euri_backend.Data.Models;
 using Euri_backend.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Euri_backend.Controllers
 {
@@ -24,8 +25,9 @@ namespace Euri_backend.Controllers
         }
 
         // GET: api/Baskets
-        [HttpGet]
+        [HttpGet, Authorize]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BasketDto>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<IEnumerable<BasketDto>>> GetBaskets()
         {
             var baskets = await _repository.GetAllBaskets();
