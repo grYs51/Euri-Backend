@@ -60,6 +60,24 @@ public class UserRepository : IUserRepository
         return user;
     }
 
+    public async Task<UserModel> Login(string email, string password)
+    {
+        var user =  await _ctxt.Users.FirstOrDefaultAsync(x => x.Email == email);
+        
+        if (user == null) return null;
+        
+        var passwordMatch =  BCrypt.Net.BCrypt.Verify( password, user.Password);
+        
+        return passwordMatch ? user : null;
+    }
+
+    public Task<UserModel> GetUserByRefreshToken(string refreshToken)
+    {
+        var user = _ctxt.Users.FirstOrDefaultAsync(x => x.RefreshToken == refreshToken);
+        return user;
+    }
+
+
     private bool UserExists(int id)
     {
         return _ctxt.Users.Any(x => x.Id == id);

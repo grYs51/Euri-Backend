@@ -31,7 +31,7 @@ public class Utilities
             {
                 FirstName = "test1",
                 LastName = "test1",
-                Password = "123456",
+                Password = BCrypt.Net.BCrypt.HashPassword("123456"),
                 Email = "test.test@euri.com",
                 Role = "admin",
                 Address = new AddressModel
@@ -48,7 +48,7 @@ public class Utilities
             {
                 FirstName = "test2",
                 LastName = "test2",
-                Password = "123456",
+                Password = BCrypt.Net.BCrypt.HashPassword("123456"),
                 Email = "test2.test2@euri.com",
                 Role = "user",
                 Address = new AddressModel

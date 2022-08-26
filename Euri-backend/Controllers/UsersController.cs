@@ -1,7 +1,13 @@
-﻿using Euri_backend.Data.Dto;
-using Euri_backend.Data.Models;
+﻿using System.Collections.Immutable;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Euri_backend.Data.Dto;
+using Euri_backend.Data.Dto.Identity;
 using Euri_backend.Repository.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -39,15 +45,12 @@ public class UsersController : ControllerBase
         return Ok(usersDtos);
     }
 
-    [HttpPost]
+    [HttpPost, Authorize]
     public async Task<ActionResult<UserDto>> Post([FromBody] CreateUserDto user)
     {
         try
         {
-            if (user is null)
-            {
-                return BadRequest("User object is null");
-            }
+            if (user is null) return BadRequest("User object is null");
 
             if (!ModelState.IsValid) return BadRequest("Invalid model state");
 
@@ -62,7 +65,7 @@ public class UsersController : ControllerBase
         }
     }
 
-    [HttpPut("{id}")]
+    [HttpPut("{id}"), Authorize]
     public async Task<ActionResult<UserDto>> PutUser(int id, UpdatedUserDto user)
     {
         if (id != user.Id) return BadRequest();
@@ -74,7 +77,7 @@ public class UsersController : ControllerBase
         return Ok(new UserDto(newUser));
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("{id}"), Authorize]
     public async Task<IActionResult> DeleteUser(int id)
     {
         if (id == 0) return BadRequest();

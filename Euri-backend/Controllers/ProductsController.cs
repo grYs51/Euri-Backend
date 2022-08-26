@@ -11,6 +11,7 @@ using Euri_backend.Data.Models;
 using Euri_backend.Repository;
 using Euri_backend.Repository.Interfaces;
 using Euri_backend.Utillities;
+using Microsoft.AspNetCore.Authorization;
 using Newtonsoft.Json;
 
 namespace Euri_backend.Controllers
@@ -58,7 +59,7 @@ namespace Euri_backend.Controllers
 
         // PUT: api/Product/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut("{id}"), Authorize]
         public async Task<ActionResult<ProductDto>> PutProductModel(int id, UpdateProductDto productModel)
         {
             if (id != productModel.Id)
@@ -78,7 +79,7 @@ namespace Euri_backend.Controllers
 
         // POST: api/Product
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost, Authorize]
         public async Task<ActionResult<ProductDto>> PostProductModel(CreateProductDto productModel)
         {
             var productEntity = await _repository.CreateProduct(productModel.ToProductModel());  
@@ -87,7 +88,7 @@ namespace Euri_backend.Controllers
         }
 
         // DELETE: api/Product/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}"), Authorize]
         public async Task<IActionResult> DeleteProductModel(int id)
         {
             if(id == 0)
